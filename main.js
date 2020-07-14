@@ -1,37 +1,35 @@
 // Defining text characters for the empty and full hearts for you to use later.
 const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
-let liked = false
+
 // Your JavaScript code goes here!
 document.addEventListener("DOMContentLoaded", () => {
-  const likeBtn = document.querySelector(".like")
+  const hearts = Array.from(document.getElementsByClassName('like-glyph'));
   const errorDiv = document.getElementById("modal")
 
-  likeBtn.addEventListener("click", (event) => {
-    event.preventDefault()
-    debugger
-    mimicServerCall()
-      .then(() => {
-        if (likeBtn.className == "activated-heart") {
-          likeBtn.innerHTML = `Like! ${EMPTY_HEART}`
-          likeBtn.className = "deactivated-heart"
+  hearts.forEach(heart => {
+    heart.addEventListener("click", function(event) {
+      mimicServerCall()
+      .then((response) => {
+        if (heart.innerHTML === EMPTY_HEART) {
+          heart.className = "activated-heart";
+          heart.innerHTML = FULL_HEART;
         } else {
-          likeBtn.innerHTML = FULL_HEART
-          likeBtn.className = "activated-heart"
+          heart.className = "like-glyph";
+          heart.innerHTML = EMPTY_HEART;
         }
       })
       .catch((error) => {
-        errorDiv.className = "unhidden"
-        errorDiv.innerText = error
-        setTimeout(() => {
-          errorDiv.className = "hidden"
-        }, 5000)
+        errorDiv.className = "unhidden";
+        let modalMessage = document.getElementById('modal-message');
+            modalMessage.innerHTML = error;
+        setTimeout(function() {
+          errorDiv.className = "hidden" 
+        }, 5000);
       })
-
-  });
+    })
+  })
 })
-
-
 
 //------------------------------------------------------------------------------
 // Ignore after this point. Used only for demo purposes
